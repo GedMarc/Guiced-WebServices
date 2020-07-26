@@ -25,8 +25,6 @@ class WSTest
 		Undertow ud = GuicedUndertow.boot("localhost", 6004);
 		System.out.println("Started Server");
 
-
-
 		ud.stop();
 	}
 }
