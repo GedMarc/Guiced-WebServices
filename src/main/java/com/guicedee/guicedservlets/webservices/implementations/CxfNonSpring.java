@@ -46,6 +46,7 @@ public class CxfNonSpring
 				String path = (anno.name()
 				                   .isEmpty() ? "/" + calledType.getSimpleName() : anno.name());
 				path = WebServiceServletModule.cleanPath(WSContext.baseWSUrl) + path;
+				path = path.replace("//", "/");
 
 				Endpoint.publish(path, o);
 				LogFactory.getLog(CxfNonSpring.class)
