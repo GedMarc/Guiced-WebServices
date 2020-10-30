@@ -3,7 +3,8 @@ module com.guicedee.guicedservlets.webservices {
 
 	requires com.guicedee.guicedservlets.undertow;
 	requires org.apache.cxf;
-	requires java.jws;
+	requires javax.jws;
+
 
 	provides com.guicedee.guicedservlets.services.IGuiceSiteBinder with com.guicedee.guicedservlets.webservices.implementations.WebServiceServletModule;
 	provides com.guicedee.guicedinjection.interfaces.IGuiceConfigurator with com.guicedee.guicedservlets.webservices.implementations.WebServiceScannerConfig;
