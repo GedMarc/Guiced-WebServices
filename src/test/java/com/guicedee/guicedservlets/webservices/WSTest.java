@@ -21,7 +21,7 @@ class WSTest
 	{
 		LogFactory.configureConsoleColourOutput(Level.FINE);
 		LogFactory.setGroupLevel("com.sun.xml.bind",Level.INFO);
-		LogFactory.setGroupLevel("javax.xml.bind",Level.INFO);
+		LogFactory.setGroupLevel("jakarta.xml.bind",Level.INFO);
 		Undertow ud = GuicedUndertow.boot("localhost", 6004);
 		System.out.println("Started Server");
 

@@ -1,7 +1,7 @@
 package com.guicedee.guicedservlets.webservices;
 
-import javax.jws.WebService;
-import javax.xml.ws.Endpoint;
+import jakarta.jws.WebService;
+import jakarta.xml.ws.Endpoint;
 
 @WebService(name = "SimpleWebService")
 public class SimpleWebService

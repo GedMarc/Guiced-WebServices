@@ -3,9 +3,9 @@ module com.guicedee.guicedservlets.webservices {
 
 	requires com.guicedee.guicedservlets.undertow;
 	requires org.apache.cxf;
-	requires transitive javax.jws;
-	requires transitive javax.xml.ws;
-	requires transitive javax.xml.soap;
+	requires transitive jakarta.jws;
+	requires transitive jakarta.xml.ws;
+	requires transitive jakarta.xml.soap;
 
 
 	provides com.guicedee.guicedservlets.services.IGuiceSiteBinder with com.guicedee.guicedservlets.webservices.implementations.WebServiceServletModule;
