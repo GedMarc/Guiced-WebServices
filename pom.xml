@@ -21,7 +21,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.guicedee</groupId>
+            <groupId>com.guicedee.servlets</groupId>
             <artifactId>guiced-undertow</artifactId>
         </dependency>
 
