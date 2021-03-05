@@ -26,10 +26,9 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.xml.ws</groupId>
-            <artifactId>jaxws-api</artifactId>
+            <groupId>com.guicedee.services</groupId>
+            <artifactId>jakarta.xml.ws-api</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>com.guicedee.services</groupId>
