@@ -21,6 +21,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.guicedee.services</groupId>
+            <artifactId>swagger</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.guicedee.servlets</groupId>
             <artifactId>guiced-undertow</artifactId>
         </dependency>
