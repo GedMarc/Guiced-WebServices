@@ -12,7 +12,7 @@
     <groupId>com.guicedee.servlets</groupId>
     <artifactId>guiced-web-services</artifactId>
     <packaging>jar</packaging>
-
+    <version>0.0.0_0-SNAPSHOT</version>
     <name>Guiced Web Services</name>
     <description>An integration library for Metro WS into the Guiced framework
     </description>
