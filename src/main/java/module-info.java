@@ -1,4 +1,4 @@
-module com.guicedee.guicedservlets.webservices {
+module com.guicedee.webservices {
 	exports com.guicedee.guicedservlets.webservices;
 
 	requires com.guicedee.guicedservlets.undertow;

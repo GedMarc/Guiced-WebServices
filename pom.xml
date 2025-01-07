@@ -9,7 +9,7 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.guicedee.servlets</groupId>
+    <groupId>com.guicedee</groupId>
     <artifactId>guiced-web-services</artifactId>
     <packaging>jar</packaging>
     <version>2.0.0-SNAPSHOT</version>
@@ -29,11 +29,13 @@
             <groupId>com.guicedee.services</groupId>
             <artifactId>swagger</artifactId>
         </dependency>
+<!--
 
         <dependency>
             <groupId>com.guicedee.servlets</groupId>
             <artifactId>guiced-undertow</artifactId>
         </dependency>
+-->
 
         <dependency>
             <groupId>com.guicedee.services</groupId>
