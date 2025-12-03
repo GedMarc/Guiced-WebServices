@@ -9,7 +9,7 @@ module com.guicedee.webservices {
 
 
 	provides com.guicedee.guicedservlets.services.IGuiceSiteBinder with com.guicedee.guicedservlets.webservices.implementations.WebServiceServletModule;
-	provides com.guicedee.guicedinjection.interfaces.IGuiceConfigurator with com.guicedee.guicedservlets.webservices.implementations.WebServiceScannerConfig;
+	provides com.guicedee.client.services.lifecycle.IGuiceConfigurator with com.guicedee.guicedservlets.webservices.implementations.WebServiceScannerConfig;
 	provides com.guicedee.guicedservlets.undertow.services.UndertowDeploymentConfigurator with com.guicedee.guicedservlets.webservices.implementations.JaxWSUndertowDeploymentConfigurator;
 
 	opens com.guicedee.guicedservlets.webservices.implementations to com.google.guice;
