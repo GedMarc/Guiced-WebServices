@@ -26,7 +26,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.guicedee.services</groupId>
+            <groupId>com.guicedee.modules.services</groupId>
             <artifactId>swagger</artifactId>
         </dependency>
 <!--
@@ -38,27 +38,27 @@
 -->
 
         <dependency>
-            <groupId>com.guicedee.services</groupId>
+            <groupId>com.guicedee.modules.services</groupId>
             <artifactId>jakarta.xml.ws-api</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.guicedee.services</groupId>
+            <groupId>com.guicedee.modules.services</groupId>
             <artifactId>jakarta.jws-api</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.guicedee.services</groupId>
+            <groupId>com.guicedee.modules.services</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.guicedee.services</groupId>
+            <groupId>com.guicedee.modules.services</groupId>
             <artifactId>org.apache.cxf</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.guicedee.services</groupId>
+            <groupId>com.guicedee.modules.services</groupId>
             <artifactId>jboss-logmanager</artifactId>
         </dependency>
 
