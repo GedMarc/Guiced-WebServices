@@ -1,11 +1,11 @@
 package com.guicedee.guicedservlets.webservices.implementations;
 
-import com.guicedee.guicedinjection.GuiceConfig;
-import com.guicedee.guicedinjection.interfaces.IGuiceConfigurator;
+import com.guicedee.client.services.IGuiceConfig;
+import com.guicedee.client.services.lifecycle.IGuiceConfigurator;
 
-public class WebServiceScannerConfig implements IGuiceConfigurator {
+public class WebServiceScannerConfig implements IGuiceConfigurator<WebServiceScannerConfig> {
 	@Override
-	public GuiceConfig configure(GuiceConfig config) {
+	public IGuiceConfig<?> configure(IGuiceConfig<?> config) {
 
 		config.setAnnotationScanning(true);
 		config.setMethodInfo(true);
