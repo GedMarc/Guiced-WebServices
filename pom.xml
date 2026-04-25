@@ -10,46 +10,40 @@
     </parent>
 
     <groupId>com.guicedee</groupId>
-    <artifactId>guiced-web-services</artifactId>
+    <artifactId>web-services</artifactId>
     <packaging>jar</packaging>
     <version>2.0.0-RC9</version>
 
     <name>Guiced Web Services</name>
-    <description>An integration library for Metro WS into the Guiced framework
+    <description>An integration library for Apache CXF SOAP web services on Vert.x inside the GuicedEE framework
     </description>
     <url>https://github.com/GedMarc/GuicedWebServices</url>
 
     <properties>
         <ignore.moditect>true</ignore.moditect>
-        <flatten.pom>false</flatten.pom>
+        <flatten.pom>true</flatten.pom>
     </properties>
+
     <dependencies>
 
         <dependency>
-            <groupId>com.guicedee.modules.services</groupId>
-            <artifactId>swagger</artifactId>
+            <groupId>com.guicedee</groupId>
+            <artifactId>web</artifactId>
         </dependency>
-<!--
 
         <dependency>
-            <groupId>com.guicedee.servlets</groupId>
-            <artifactId>guiced-undertow</artifactId>
+            <groupId>com.guicedee</groupId>
+            <artifactId>client</artifactId>
         </dependency>
--->
 
         <dependency>
-            <groupId>com.guicedee.modules.services</groupId>
+            <groupId>jakarta.xml.ws</groupId>
             <artifactId>jakarta.xml.ws-api</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.guicedee.modules.services</groupId>
+            <groupId>jakarta.jws</groupId>
             <artifactId>jakarta.jws-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.guicedee.modules.services</groupId>
-            <artifactId>commons-io</artifactId>
         </dependency>
 
         <dependency>
@@ -58,8 +52,20 @@
         </dependency>
 
         <dependency>
-            <groupId>com.guicedee.modules.services</groupId>
-            <artifactId>jboss-logmanager</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.guicedee</groupId>
+            <artifactId>inject</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -83,25 +89,7 @@
             <plugin>
                 <groupId>org.moditect</groupId>
                 <artifactId>moditect-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>add-module-infos</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>add-module-info</goal>
-                        </goals>
-                        <configuration>
-                            <overwriteExistingFiles>true</overwriteExistingFiles>
-                            <module>
-                                <moduleInfoFile>
-                                    src/jre11/java/module-info.java
-                                </moduleInfoFile>
-                            </module>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
-
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -113,8 +101,63 @@
                 <artifactId>copy-rename-maven-plugin</artifactId>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.guicedee</groupId>
+                <artifactId>fasterxml-bom</artifactId>
+                <version>${guicedee.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.guicedee</groupId>
+                <artifactId>standalone-bom</artifactId>
+                <version>${guicedee.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.guicedee</groupId>
+                <artifactId>jakarta-bom</artifactId>
+                <version>${guicedee.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.guicedee</groupId>
+                <artifactId>google-bom</artifactId>
+                <version>${guicedee.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.guicedee</groupId>
+                <artifactId>apache-bom</artifactId>
+                <version>${guicedee.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.guicedee</groupId>
+                <artifactId>tests-bom</artifactId>
+                <version>${guicedee.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
