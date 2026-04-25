@@ -17,9 +17,9 @@
     <name>Guiced Web Services</name>
     <description>An integration library for Apache CXF SOAP web services on Vert.x inside the GuicedEE framework
     </description>
-    <url>https://github.com/GedMarc/GuicedWebServices</url>
 
     <properties>
+        <project.scm.nameUrl>/GuicedEE/GuicedWebServices</project.scm.nameUrl>
         <ignore.moditect>true</ignore.moditect>
         <flatten.pom>true</flatten.pom>
     </properties>
@@ -36,15 +36,6 @@
             <artifactId>client</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>jakarta.xml.ws</groupId>
-            <artifactId>jakarta.xml.ws-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.jws</groupId>
-            <artifactId>jakarta.jws-api</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.guicedee.modules.services</groupId>
@@ -70,19 +61,6 @@
 
     </dependencies>
 
-    <scm>
-        <url>https://github.com/GedMarc/GuicedWebServices.git</url>
-    </scm>
-
-    <issueManagement>
-        <system>Github</system>
-        <url>https://github.com/GedMarc/GuicedWebServices/issues</url>
-    </issueManagement>
-
-    <ciManagement>
-        <system>TeamCity</system>
-        <url>http://jwebmp.com/teamcity</url>
-    </ciManagement>
 
     <build>
         <plugins>

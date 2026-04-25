@@ -7,10 +7,8 @@ import com.guicedee.webservices.services.WebServicePostStartup;
 module com.guicedee.webservices {
     requires transitive com.guicedee.vertx.web;
     requires transitive org.apache.cxf;
-    requires transitive jakarta.jws;
-    requires transitive jakarta.xml.ws;
 
-    requires org.slf4j;
+    requires org.apache.logging.log4j;
     requires static lombok;
 
     exports com.guicedee.webservices;

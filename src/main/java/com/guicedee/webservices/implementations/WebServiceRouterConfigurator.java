@@ -3,13 +3,13 @@ package com.guicedee.webservices.implementations;
 import com.guicedee.vertx.web.spi.VertxRouterConfigurator;
 import com.guicedee.webservices.WSContext;
 import io.vertx.ext.web.Router;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Configures the Vert.x router to proxy SOAP requests to the embedded CXF HTTP server.
  * Routes matching the WSContext base path are forwarded to CXF's local transport.
  */
-@Slf4j
+@Log4j2
 public class WebServiceRouterConfigurator implements VertxRouterConfigurator<WebServiceRouterConfigurator> {
 
     @Override

@@ -4,10 +4,10 @@ import com.guicedee.client.IGuiceContext;
 import com.guicedee.client.services.lifecycle.IGuicePostStartup;
 import com.guicedee.webservices.WSContext;
 import io.github.classgraph.ClassInfo;
-import io.vertx.core.Future;
+import io.smallrye.mutiny.Uni;
 import jakarta.jws.WebService;
 import jakarta.xml.ws.Endpoint;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.cxf.BusFactory;
 
 import java.util.ArrayList;
@@ -20,22 +20,22 @@ import java.util.List;
  * Endpoints are published using CXF's {@link Endpoint#publish(String, Object)} API
  * with the configured base URL from {@link WSContext#baseWSUrl}.
  */
-@Slf4j
+@Log4j2
 public class WebServicePostStartup implements IGuicePostStartup<WebServicePostStartup> {
 
     @Override
-    public List<Future<Boolean>> postLoad() {
-        List<Future<Boolean>> futures = new ArrayList<>();
-        futures.add(Future.future(promise -> {
+    public List<Uni<Boolean>> postLoad() {
+        List<Uni<Boolean>> unis = new ArrayList<>();
+        unis.add(Uni.createFrom().item(() -> {
             try {
                 publishEndpoints();
-                promise.complete(true);
+                return true;
             } catch (Exception e) {
                 log.error("Failed to publish SOAP web service endpoints", e);
-                promise.fail(e);
+                throw new RuntimeException(e);
             }
         }));
-        return futures;
+        return unis;
     }
 
     private void publishEndpoints() {
@@ -111,4 +111,3 @@ public class WebServicePostStartup implements IGuicePostStartup<WebServicePostSt
         return Integer.MIN_VALUE + 600;
     }
 }
-
