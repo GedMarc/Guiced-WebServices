@@ -3,22 +3,26 @@ package com.guicedee.webservices.services;
 import com.guicedee.client.IGuiceContext;
 import com.guicedee.client.services.lifecycle.IGuicePostStartup;
 import com.guicedee.webservices.WSContext;
+import com.guicedee.webservices.transport.VertxTransportFactory;
 import io.github.classgraph.ClassInfo;
 import io.smallrye.mutiny.Uni;
 import jakarta.jws.WebService;
-import jakarta.xml.ws.Endpoint;
 import lombok.extern.log4j.Log4j2;
+import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
+import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
+import org.apache.cxf.transport.DestinationFactoryManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Post-startup hook that discovers @WebService annotated classes via classpath scanning
- * and publishes them as CXF endpoints on the Vert.x web server.
+ * and publishes them as CXF endpoints on the Vert.x web server using a custom
+ * Vert.x transport (no servlet dependency).
  * <p>
- * Endpoints are published using CXF's {@link Endpoint#publish(String, Object)} API
- * with the configured base URL from {@link WSContext#baseWSUrl}.
+ * Endpoints are published using CXF's {@link JaxWsServerFactoryBean} API
+ * with the {@link VertxTransportFactory} registered on the CXF Bus.
  */
 @Log4j2
 public class WebServicePostStartup implements IGuicePostStartup<WebServicePostStartup> {
@@ -39,9 +43,19 @@ public class WebServicePostStartup implements IGuicePostStartup<WebServicePostSt
     }
 
     private void publishEndpoints() {
-        // Initialize the CXF Bus
-        var bus = BusFactory.newInstance().createBus();
+        // Initialize the CXF Bus with Vert.x transport
+        Bus bus = BusFactory.newInstance().createBus();
         BusFactory.setDefaultBus(bus);
+
+        // Register our Vert.x transport factory
+        VertxTransportFactory transportFactory = new VertxTransportFactory();
+        DestinationFactoryManager dfm = bus.getExtension(DestinationFactoryManager.class);
+        dfm.registerDestinationFactory(VertxTransportFactory.TRANSPORT_ID, transportFactory);
+        dfm.registerDestinationFactory("http://cxf.apache.org/transports/http", transportFactory);
+        dfm.registerDestinationFactory("http://cxf.apache.org/transports/http/configuration", transportFactory);
+
+        // Store the factory in WSContext for the router configurator to access
+        WSContext.setTransportFactory(transportFactory);
 
         // Discover @WebService annotated classes from classpath scan
         var scanResult = IGuiceContext.instance().getScanResult();
@@ -61,17 +75,7 @@ public class WebServicePostStartup implements IGuicePostStartup<WebServicePostSt
             }
 
             try {
-                Object instance = IGuiceContext.get(endpointClass);
-                String servicePath = annotation.name().isEmpty()
-                        ? "/" + endpointClass.getSimpleName()
-                        : "/" + annotation.name();
-
-                String fullPath = WSContext.cleanPath(WSContext.baseWSUrl) + servicePath.replaceFirst("^/", "");
-                fullPath = fullPath.replace("//", "/");
-
-                Endpoint.publish(fullPath, instance);
-                publishedCount++;
-                log.info("Published SOAP endpoint: {} -> {}", endpointClass.getSimpleName(), fullPath);
+                publishedCount += publishEndpoint(bus, endpointClass, annotation);
             } catch (Exception e) {
                 log.error("Failed to publish web service for: {}", endpointClass.getCanonicalName(), e);
             }
@@ -81,33 +85,46 @@ public class WebServicePostStartup implements IGuicePostStartup<WebServicePostSt
         for (Class<?> endpointClass : WSContext.getRegisteredEndpoints()) {
             WebService annotation = endpointClass.getAnnotation(WebService.class);
             if (annotation == null) {
-                log.warn("Manually registered class {} does not have @WebService annotation, skipping", endpointClass.getName());
+                log.warn("Manually registered class {} does not have @WebService annotation, skipping",
+                        endpointClass.getName());
                 continue;
             }
 
             try {
-                Object instance = IGuiceContext.get(endpointClass);
-                String servicePath = annotation.name().isEmpty()
-                        ? "/" + endpointClass.getSimpleName()
-                        : "/" + annotation.name();
-
-                String fullPath = WSContext.cleanPath(WSContext.baseWSUrl) + servicePath.replaceFirst("^/", "");
-                fullPath = fullPath.replace("//", "/");
-
-                Endpoint.publish(fullPath, instance);
-                publishedCount++;
-                log.info("Published manually registered SOAP endpoint: {} -> {}", endpointClass.getSimpleName(), fullPath);
+                publishedCount += publishEndpoint(bus, endpointClass, annotation);
             } catch (Exception e) {
-                log.error("Failed to publish manually registered web service for: {}", endpointClass.getCanonicalName(), e);
+                log.error("Failed to publish manually registered web service for: {}",
+                        endpointClass.getCanonicalName(), e);
             }
         }
 
         log.info("Published {} SOAP web service endpoint(s) under {}", publishedCount, WSContext.baseWSUrl);
     }
 
+    private int publishEndpoint(Bus bus, Class<?> endpointClass, WebService annotation) {
+        Object instance = IGuiceContext.get(endpointClass);
+        String servicePath = annotation.name().isEmpty()
+                ? "/" + endpointClass.getSimpleName()
+                : "/" + annotation.name();
+
+        String fullPath = WSContext.cleanPath(WSContext.baseWSUrl) + servicePath.replaceFirst("^/", "");
+        fullPath = fullPath.replace("//", "/");
+
+        JaxWsServerFactoryBean factory = new JaxWsServerFactoryBean();
+        factory.setBus(bus);
+
+        factory.setServiceBean(instance);
+        factory.setAddress(fullPath);
+        factory.setTransportId(VertxTransportFactory.TRANSPORT_ID);
+
+        factory.create();
+
+        log.info("Published SOAP endpoint: {} -> {}", endpointClass.getSimpleName(), fullPath);
+        return 1;
+    }
+
     @Override
     public Integer sortOrder() {
-        // Run after the web server is started
         return Integer.MIN_VALUE + 600;
     }
 }

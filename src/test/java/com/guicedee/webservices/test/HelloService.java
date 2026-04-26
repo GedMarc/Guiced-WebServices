@@ -1,5 +1,8 @@
 package com.guicedee.webservices.test;
 
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebParam;
+import jakarta.jws.WebResult;
 import jakarta.jws.WebService;
 
 /**
@@ -8,6 +11,8 @@ import jakarta.jws.WebService;
 @WebService(targetNamespace = "http://test.webservices.guicedee.com/hello", name = "HelloService")
 public interface HelloService {
 
-    String sayHello(String name);
+    @WebMethod(operationName = "sayHello")
+    @WebResult(name = "greeting")
+    String sayHello(@WebParam(name = "name") String name);
 }
 

@@ -1,11 +1,14 @@
 package com.guicedee.webservices;
 
+import com.guicedee.webservices.transport.VertxTransportFactory;
+
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Configuration context for SOAP web services.
- * Controls the base URL path under which CXF endpoints are published.
+ * Controls the base URL path under which CXF endpoints are published
+ * and holds a reference to the Vert.x transport factory.
  */
 public class WSContext {
 
@@ -16,6 +19,7 @@ public class WSContext {
     public static String baseWSUrl = "/WebServices";
 
     private static final Set<Class<?>> registeredEndpoints = new HashSet<>();
+    private static VertxTransportFactory transportFactory;
 
     /**
      * Manually register an endpoint implementation class for publishing.
@@ -37,6 +41,20 @@ public class WSContext {
     }
 
     /**
+     * Sets the Vert.x transport factory (called during post-startup).
+     */
+    public static void setTransportFactory(VertxTransportFactory factory) {
+        transportFactory = factory;
+    }
+
+    /**
+     * Returns the Vert.x transport factory for routing SOAP requests.
+     */
+    public static VertxTransportFactory getTransportFactory() {
+        return transportFactory;
+    }
+
+    /**
      * Ensures a path starts and ends with '/'.
      *
      * @param path the path to clean
@@ -52,4 +70,3 @@ public class WSContext {
         return path;
     }
 }
-

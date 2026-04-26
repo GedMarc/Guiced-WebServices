@@ -1,7 +1,9 @@
 package com.guicedee.webservices.test;
 
 import com.guicedee.client.IGuiceContext;
+import com.guicedee.client.utils.LogUtils;
 import io.vertx.core.Vertx;
+import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.*;
 
 import java.net.URI;
@@ -24,12 +26,64 @@ public class WebServiceIntegrationTest {
 
     @BeforeAll
     void setUp() {
+        LogUtils.addConsoleLogger(Level.DEBUG);
+
         System.out.println("Initializing GuicedEE context for WS tests...");
+        // Register test endpoints manually since test module classes may not be found by classpath scan
+        com.guicedee.webservices.WSContext.registerEndpoint(HelloServiceImpl.class);
+        com.guicedee.webservices.WSContext.registerEndpoint(CalculatorService.class);
         IGuiceContext.instance().inject();
 
         System.out.println("Waiting for Vert.x HTTP server...");
         TestServerReady.waitForServer();
         System.out.println("Server ready.");
+
+        // Try to manually publish endpoints to see errors
+        try {
+            var bus = org.apache.cxf.BusFactory.getDefaultBus(false);
+            System.out.println("Default CXF Bus: " + bus);
+            if (bus == null) {
+                bus = org.apache.cxf.BusFactory.newInstance().createBus();
+                org.apache.cxf.BusFactory.setDefaultBus(bus);
+                System.out.println("Created new CXF Bus: " + bus);
+            }
+
+            var vtf = new com.guicedee.webservices.transport.VertxTransportFactory();
+            var dfm = bus.getExtension(org.apache.cxf.transport.DestinationFactoryManager.class);
+            dfm.registerDestinationFactory(com.guicedee.webservices.transport.VertxTransportFactory.TRANSPORT_ID, vtf);
+            dfm.registerDestinationFactory("http://cxf.apache.org/transports/http", vtf);
+            dfm.registerDestinationFactory("http://cxf.apache.org/transports/http/configuration", vtf);
+            com.guicedee.webservices.WSContext.setTransportFactory(vtf);
+
+            // Publish HelloServiceImpl
+            var helloInstance = IGuiceContext.get(HelloServiceImpl.class);
+            var factory1 = new org.apache.cxf.jaxws.JaxWsServerFactoryBean();
+            factory1.setBus(bus);
+            factory1.setServiceBean(helloInstance);
+            factory1.setAddress("/WebServices/HelloServiceImpl");
+            factory1.setTransportId(com.guicedee.webservices.transport.VertxTransportFactory.TRANSPORT_ID);
+            factory1.create();
+            System.out.println("Published HelloServiceImpl");
+
+            // Publish CalculatorService
+            var calcInstance = IGuiceContext.get(CalculatorService.class);
+            var factory2 = new org.apache.cxf.jaxws.JaxWsServerFactoryBean();
+            factory2.setBus(bus);
+            factory2.setServiceBean(calcInstance);
+            factory2.setAddress("/WebServices/CalculatorService");
+            factory2.setTransportId(com.guicedee.webservices.transport.VertxTransportFactory.TRANSPORT_ID);
+            factory2.create();
+            System.out.println("Published CalculatorService");
+
+            System.out.println("Destinations after manual publish: " + vtf.getDestinations().keySet());
+        } catch (Exception e) {
+            System.out.println("Manual publish failed: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace(System.out);
+            if (e.getCause() != null) {
+                System.out.println("Root cause: " + e.getCause().getClass().getName() + ": " + e.getCause().getMessage());
+                e.getCause().printStackTrace(System.out);
+            }
+        }
 
         client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))

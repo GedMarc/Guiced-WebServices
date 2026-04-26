@@ -7,6 +7,7 @@ import com.guicedee.webservices.services.WebServicePostStartup;
 module com.guicedee.webservices {
     requires transitive com.guicedee.vertx.web;
     requires transitive org.apache.cxf;
+    requires java.logging;
 
     requires org.apache.logging.log4j;
     requires static lombok;
@@ -14,6 +15,7 @@ module com.guicedee.webservices {
     exports com.guicedee.webservices;
     exports com.guicedee.webservices.implementations;
     exports com.guicedee.webservices.services;
+    exports com.guicedee.webservices.transport;
 
     provides IGuiceConfigurator with WebServiceScannerConfig;
     provides IGuicePostStartup with WebServicePostStartup;
@@ -22,4 +24,5 @@ module com.guicedee.webservices {
     opens com.guicedee.webservices to com.google.guice;
     opens com.guicedee.webservices.implementations to com.google.guice;
     opens com.guicedee.webservices.services to com.google.guice;
+    opens com.guicedee.webservices.transport to com.google.guice, org.apache.cxf;
 }
